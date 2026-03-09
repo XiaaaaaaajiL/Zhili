@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智历 v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg0:#F5F7FA;--bg1:#FFFFFF;--bg2:#FFFFFF;--bg3:#F0F2F5;--bd:#E2E6EC;--t1:#1A1D26;--t2:#5A6170;--t3:#9CA3B0;--blue:#4F5FFF;--cyan:#0891B2;--green:#059669;--orange:#D97706;--red:#DC2626;--purple:#7C3AED;--sw:220px}
+*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg0);color:var(--t1);font-family:'Noto Sans SC',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#C8CDD5;border-radius:3px}::-webkit-scrollbar-track{background:#F0F2F5}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sw);background:#F8F9FB;border-right:1px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:50;display:flex;flex-direction:column}
+.main{margin-left:var(--sw);flex:1}.main-inner{max-width:1100px;margin:0 auto;padding:32px 36px}
+.s-logo{padding:24px 20px;border-bottom:1px solid var(--bd)}.s-logo h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;background:linear-gradient(135deg,#3B44E0,#0891B2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.s-logo p{font-size:10px;color:var(--t3);margin-top:3px;letter-spacing:2px}
+.s-nav{flex:1;padding:12px 10px}.ns{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--t3);padding:14px 12px 6px}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:var(--t2);cursor:pointer;transition:all .2s;font-size:13px;margin-bottom:2px;border:1px solid transparent}
+.ni:hover{background:var(--bg2);color:var(--t1)}.ni.act{background:rgba(79,95,255,.08);color:var(--blue);border-color:rgba(79,95,255,.15);font-weight:500}
+.ni .ic{font-size:16px;width:22px;text-align:center}.nbdg{margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:2px 6px;border-radius:8px;font-weight:600}
+.s-ft{padding:14px 16px;border-top:1px solid var(--bd)}.s-ft button{width:100%;background:#F0F2F5;border:1px solid var(--bd);color:var(--t2);padding:8px;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}.chd{padding:18px 22px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}.chd h3{font-size:14px;font-weight:600}.cbd{padding:22px}
+.btn{border:none;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.bl{padding:13px 30px;font-size:15px}.bm{padding:9px 18px;font-size:13px}.bs{padding:6px 12px;font-size:12px}
+.bp{background:linear-gradient(135deg,#4F5FFF,#6B5FFF);color:#fff;box-shadow:0 2px 8px rgba(79,95,255,0.25)}.bp:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(79,95,255,.35)}
+.bp:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.bg{background:#FFFFFF;border:1px solid var(--bd);color:var(--t2)}.bg:hover{border-color:var(--blue);color:var(--blue)}
+.ta{width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:12px;padding:14px;color:var(--t1);font-size:13px;line-height:1.8;resize:vertical;font-family:'JetBrains Mono',monospace;transition:border-color .3s}
+.ta:focus{outline:none;border-color:var(--blue)}.ta::placeholder{color:var(--t3)}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sc{padding:20px;text-align:center;position:relative;overflow:hidden}.sv{font-size:26px;font-weight:900;font-family:'JetBrains Mono',monospace}.sl{font-size:11px;color:var(--t3);margin-top:4px}
+.tabs{display:flex;gap:2px;background:#F0F2F5;border-radius:12px;padding:3px;margin-bottom:20px;border:1px solid var(--bd)}
+.tb{flex:1;padding:9px 14px;border-radius:9px;border:none;background:transparent;color:var(--t3);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;text-align:center}
+.tb.act{background:#FFFFFF;color:var(--t1);box-shadow:0 1px 4px rgba(0,0,0,.08)}.tb:hover:not(.act){color:var(--t2)}
+.badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600}
+.bhi{background:rgba(220,38,38,.08);color:#DC2626}.bme{background:rgba(217,119,6,.08);color:#B45309}.blo{background:rgba(5,150,105,.08);color:#047857}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;margin:3px;background:rgba(79,95,255,.06);color:#4338CA;border:1px solid rgba(79,95,255,.12)}
+.tmatch{background:rgba(5,150,105,.06);color:#047857;border-color:rgba(5,150,105,.15)}.tmiss{background:rgba(220,38,38,.06);color:#B91C1C;border-color:rgba(220,38,38,.12)}
+.dz{border:2px dashed #D0D5DD;border-radius:14px;padding:36px;text-align:center;cursor:pointer;transition:all .3s;background:#FAFBFC}.dz:hover{border-color:var(--blue);background:rgba(79,95,255,.04)}
+.sbw{display:flex;align-items:center;gap:10px}.sb{flex:1;height:5px;background:#E8ECF0;border-radius:3px;overflow:hidden}.sbf{height:100%;border-radius:3px;transition:width 1s ease}
+.htb{width:100%;border-collapse:separate;border-spacing:0}.htb th{text-align:left;padding:10px 14px;font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--bd)}
+.htb td{padding:12px 14px;font-size:12px;border-bottom:1px solid rgba(26,26,53,.5)}.htb tr:hover td{background:#F5F7FA}
+.pss{display:flex;align-items:center;gap:0;margin:20px 0}.ps{flex:1;text-align:center}
+.sd{width:30px;height:30px;border-radius:50%;background:#F0F2F5;border:2px solid var(--bd);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--t3);transition:all .3s;position:relative;z-index:2}
+.ps.act .sd{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 14px rgba(79,95,255,.4)}.ps.done .sd{background:var(--green);border-color:var(--green);color:#fff}
+.psl{font-size:10px;color:var(--t3);margin-top:6px}.ps.act .psl{color:var(--blue)}.ps.done .psl{color:var(--green)}
+.pl{flex:0 0 50px;height:2px;background:var(--bd);margin-bottom:18px}.pl.done{background:var(--green)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.md{background:#FFFFFF;border:1px solid var(--bd);border-radius:18px;padding:32px;max-width:500px;width:92%;animation:fadeIn .3s;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.md input{width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace}
+.md input:focus{outline:none;border-color:var(--blue)}.md label{display:block;font-size:11px;color:var(--t3);margin:12px 0 5px}
+.sw select{appearance:none;width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:9px 32px 9px 12px;color:var(--t1);font-size:12px;font-family:inherit;cursor:pointer}.sw select:focus{outline:none;border-color:var(--blue)}.sw::after{content:'\u25be';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}.sw{position:relative}
+.toast{position:fixed;bottom:28px;right:28px;background:#FFFFFF;border:1px solid var(--bd);border-radius:12px;padding:12px 20px;z-index:300;animation:fadeIn .3s;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.hid{display:none!important}
+@media(max-width:900px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}.sgrid{grid-template-columns:repeat(2,1fr)}.main-inner{padding:16px 14px}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+<div class="app">
+<nav class="sidebar">
+<div class="s-logo"><h1>智历</h1><p>AI RESUME v2.0</p></div>
+<div class="s-nav">
+<div class="ns">主要功能</div>
+<div class="ni act" data-page="dashboard" onclick="goPage('dashboard')"><span class="ic">📊</span>工作台</div>
+<div class="ni" data-page="analyze" onclick="goPage('analyze')"><span class="ic">🔍</span>简历诊断</div>
+<div class="ni" data-page="result" onclick="goPage('result')" id="navR" style="display:none"><span class="ic">📋</span>诊断报告</div>
+<div class="ns">数据</div>
+<div class="ni" data-page="history" onclick="goPage('history')"><span class="ic">📁</span>历史记录<span class="nbdg" id="hB">0</span></div>
+<div class="ni" data-page="keywords" onclick="goPage('keywords')"><span class="ic">🏷️</span>关键词库</div>
+<div class="ns">系统</div>
+<div class="ni" data-page="settings" onclick="goPage('settings')"><span class="ic">⚙️</span>设置</div>
+</div>
+<div class="s-ft"><button onclick="showM()">🔑 API 配置</button></div>
+</nav>
+<div class="main"><div class="main-inner">
+
+<div id="pg-dashboard" class="pg">
+<div style="margin-bottom:28px;animation:fadeIn .5s"><h2 style="font-size:22px;font-weight:700">👋 欢迎使用智历</h2><p style="color:var(--t2);font-size:13px;margin-top:5px">AI 六维度智能简历诊断平台</p></div>
+<div class="sgrid">
+<div class="card sc" style="animation:fadeIn .4s"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan))"></div><div style="font-size:24px;margin-bottom:8px">📝</div><div class="sv" id="sT">0</div><div class="sl">累计诊断</div></div>
+<div class="card sc" style="animation:fadeIn .4s .1s both"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),#00FFB3)"></div><div style="font-size:24px;margin-bottom:8px">⭐</div><div class="sv" id="sA">--</div><div class="sl">平均得分</div></div>
+<div class="card sc" style="animation:fadeIn .4s .2s both"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange))"></div><div style="font-size:24px;margin-bottom:8px">🔒</div><div class="sv" id="sP">0</div><div class="sl">隐私风险</div></div>
+<div class="card sc" style="animation:fadeIn .4s .3s both"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),#C084FC)"></div><div style="font-size:24px;margin-bottom:8px">🚀</div><div class="sv" id="sB">0</div><div class="sl">问题已识别</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+<div class="card" style="animation:fadeIn .5s .2s both"><div class="chd"><h3>⚡ 快速开始</h3></div><div class="cbd"><p style="color:var(--t2);font-size:12px;line-height:1.8;margin-bottom:16px">三步获得专业诊断：输入简历 → 选择配置 → 查看报告</p><button class="btn bp bl" onclick="goPage('analyze')" style="width:100%">🔍 开始新的诊断</button></div></div>
+<div class="card" style="animation:fadeIn .5s .3s both"><div class="chd"><h3>💡 六大维度</h3></div><div class="cbd" style="display:flex;flex-direction:column;gap:10px;font-size:12px">
+<div style="display:flex;gap:10px;align-items:center"><span>📋</span><div><b>内容完整性</b> — 模块齐全度</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span>✍️</span><div><b>表达专业度</b> — STAR法则+量化</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span>📐</span><div><b>排版规范性</b> — 格式层次</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span>🔒</span><div><b>隐私安全性</b> — 敏感信息检测</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span>🎯</span><div><b>ATS兼容性</b> — 关键词匹配</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span>💼</span><div><b>行业适配度</b> — 定制化建议</div></div>
+</div></div>
+</div>
+</div>
+
+<div id="pg-analyze" class="pg hid">
+<div style="margin-bottom:24px;animation:fadeIn .5s"><h2 style="font-size:22px;font-weight:700">🔍 简历诊断</h2><p style="color:var(--t2);font-size:13px;margin-top:5px">六维度深度分析</p></div>
+<div class="pss" id="pSteps">
+<div class="ps act" id="ps1"><div class="sd">1</div><div class="psl">输入简历</div></div><div class="pl" id="pl1"></div>
+<div class="ps" id="ps2"><div class="sd">2</div><div class="psl">选择配置</div></div><div class="pl" id="pl2"></div>
+<div class="ps" id="ps3"><div class="sd">3</div><div class="psl">AI分析</div></div>
+</div>
+<div id="as1">
+<div class="card" style="margin-bottom:18px"><div class="chd"><h3>📄 简历内容</h3><div style="display:flex;gap:8px"><button class="btn bg bs" onclick="fillS()">填入示例</button><button class="btn bg bs" onclick="clearR()">清空</button></div></div>
+<div class="cbd">
+<div class="dz" onclick="document.getElementById('fi').click()"><div style="font-size:40px;margin-bottom:10px;opacity:.5">📂</div><p style="font-size:13px;color:var(--t2)">点击选择文件或直接粘贴</p><p style="font-size:11px;color:var(--t3)">支持 PDF / Word(.docx) / TXT</p><input type="file" id="fi" accept=".txt,.pdf,.doc,.docx" style="display:none" onchange="fileS(event)"></div>
+<div id="fI" class="hid" style="margin-top:10px;padding:10px 14px;background:var(--bg1);border-radius:10px;display:flex;align-items:center;gap:8px"><span>📎</span><span id="fN" style="font-size:12px;flex:1"></span><button class="btn bg bs" onclick="clearF()">移除</button></div>
+<div style="margin:14px 0 6px;display:flex;align-items:center;gap:8px"><div style="flex:1;height:1px;background:var(--bd)"></div><span style="font-size:11px;color:var(--t3)">或直接粘贴</span><div style="flex:1;height:1px;background:var(--bd)"></div></div>
+<textarea id="rT" class="ta" rows="10" placeholder="将简历内容粘贴到这里..."></textarea>
+<div style="display:flex;justify-content:space-between;margin-top:6px"><span id="cc" style="font-size:11px;color:var(--t3)">0 字</span><span style="font-size:11px;color:var(--t3)">建议 300-2000 字</span></div>
+</div></div>
+<div style="text-align:right"><button class="btn bp bl" onclick="toS2()">下一步 →</button></div>
+</div>
+<div id="as2" class="hid">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+<div class="card"><div class="chd"><h3>🎯 目标配置</h3></div><div class="cbd">
+<label style="font-size:11px;color:var(--t3);margin-bottom:4px;display:block">行业</label>
+<div class="sw" style="margin-bottom:12px"><select id="sI"><option value="general">通用</option><option value="tech">互联网/科技</option><option value="finance">金融</option><option value="consulting">咨询</option><option value="govt">公务员/国企</option></select></div>
+<label style="font-size:11px;color:var(--t3);margin-bottom:4px;display:block">岗位（可选）</label>
+<input id="jT" style="width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:9px 12px;color:var(--t1);font-size:12px;font-family:inherit" placeholder="如：后端开发工程师">
+</div></div>
+<div class="card"><div class="chd"><h3>📝 岗位JD（可选）</h3></div><div class="cbd"><textarea id="jD" class="ta" rows="5" style="font-family:inherit;font-size:12px" placeholder="粘贴职位描述..."></textarea></div></div>
+</div>
+<div class="card" style="margin-bottom:20px"><div class="chd"><h3>⚙️ 分析选项</h3></div><div class="cbd" style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--t2)">
+<label style="display:flex;gap:6px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)">🔒 隐私检测</label>
+<label style="display:flex;gap:6px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)">🎯 ATS分析</label>
+<label style="display:flex;gap:6px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)">⭐ STAR检查</label>
+<label style="display:flex;gap:6px;cursor:pointer"><input type="checkbox" checked style="accent-color:var(--blue)">✨ 优化建议</label>
+</div></div>
+<div id="eB" class="hid" style="background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;color:#FF6B7A;font-size:12px"></div>
+<div style="display:flex;justify-content:space-between"><button class="btn bg bl" onclick="toS1()">← 上一步</button><button class="btn bp bl" id="btnGo" onclick="startAI()">🚀 开始深度诊断</button></div>
+</div>
+<div id="as3" class="hid">
+<div class="card" style="padding:50px 30px;text-align:center">
+<div style="width:56px;height:56px;border:3px solid #E2E6EC;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
+<h3 style="font-size:16px;margin-bottom:10px">AI 正在深度分析...</h3>
+<p id="ldT" style="color:var(--t3);font-size:12px">解析简历结构</p>
+<div style="max-width:280px;margin:16px auto 0;height:4px;background:#E8ECF0;border-radius:2px;overflow:hidden"><div id="ldB" style="width:0%;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:2px;transition:width .5s"></div></div>
+</div></div>
+</div>
+
+<div id="pg-result" class="pg hid">
+<div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start;animation:fadeIn .5s">
+<div><h2 style="font-size:22px;font-weight:700">📋 诊断报告</h2><p id="rTm" style="color:var(--t2);font-size:13px;margin-top:5px"></p></div>
+<div style="display:flex;gap:8px"><button class="btn bg bm" onclick="expR()">📥 导出</button><button class="btn bp bm" onclick="goPage('analyze')">🔄 重新诊断</button></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+<div class="card" id="oC" style="text-align:center;position:relative;overflow:hidden"></div>
+<div class="card"><div class="chd"><h3>📊 雷达图</h3></div><div class="cbd" style="display:flex;justify-content:center"><canvas id="radar" width="260" height="260"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:20px" id="bC"></div>
+<div class="tabs">
+<button class="tb act" onclick="rTab('problems',this)">📊 问题诊断</button>
+<button class="tb" onclick="rTab('privacy',this)">🔒 隐私风险</button>
+<button class="tb" onclick="rTab('ats',this)">🎯 ATS分析</button>
+<button class="tb" onclick="rTab('optimize',this)">✨ 优化建议</button>
+<button class="tb" onclick="rTab('star',this)">⭐ STAR检测</button>
+</div>
+<div id="rTC"></div>
+</div>
+
+<div id="pg-history" class="pg hid">
+<div style="margin-bottom:24px;display:flex;justify-content:space-between"><div><h2 style="font-size:22px;font-weight:700">📁 历史记录</h2></div><button class="btn bs" style="background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.2)" onclick="clearH()">🗑️ 清空</button></div>
+<div class="card"><div class="cbd" id="hC"><div style="text-align:center;padding:36px;color:var(--t3)"><div style="font-size:40px;margin-bottom:10px;opacity:.4">📭</div><p>暂无记录</p></div></div></div>
+</div>
+
+<div id="pg-keywords" class="pg hid">
+<div style="margin-bottom:24px"><h2 style="font-size:22px;font-weight:700">🏷️ 行业关键词库</h2><p style="color:var(--t2);font-size:13px;margin-top:5px">各行业简历核心关键词</p></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="card"><div class="chd"><h3>💻 互联网/科技</h3></div><div class="cbd" id="kwT" style="line-height:2"></div></div>
+<div class="card"><div class="chd"><h3>💰 金融</h3></div><div class="cbd" id="kwF" style="line-height:2"></div></div>
+<div class="card"><div class="chd"><h3>📊 咨询</h3></div><div class="cbd" id="kwC" style="line-height:2"></div></div>
+<div class="card"><div class="chd"><h3>🏛️ 公务员/国企</h3></div><div class="cbd" id="kwG" style="line-height:2"></div></div>
+</div></div>
+
+<div id="pg-settings" class="pg hid">
+<div style="margin-bottom:24px"><h2 style="font-size:22px;font-weight:700">⚙️ 设置</h2></div>
+<div class="card" style="margin-bottom:16px"><div class="chd"><h3>🔑 AI模型配置</h3></div><div class="cbd">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+<div><label style="font-size:11px;color:var(--t3);margin-bottom:4px;display:block">API Base URL</label><input id="xB" style="width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:9px 12px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace" value="https://api.deepseek.com"></div>
+<div><label style="font-size:11px;color:var(--t3);margin-bottom:4px;display:block">API Key</label><input id="xK" type="password" style="width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:9px 12px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace" placeholder="sk-xxxxx"></div>
+<div><label style="font-size:11px;color:var(--t3);margin-bottom:4px;display:block">模型</label><input id="xM" style="width:100%;background:#F8F9FB;border:1px solid var(--bd);border-radius:10px;padding:9px 12px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace" value="deepseek-chat"></div>
+</div>
+<div style="margin-top:14px;display:flex;gap:10px"><button class="btn bp bm" onclick="saveCfg()">💾 保存</button><button class="btn bg bm" onclick="demoM()">🎮 演示模式</button></div>
+</div></div>
+<div class="card"><div class="chd"><h3>ℹ️ 关于</h3></div><div class="cbd" style="color:var(--t2);font-size:12px;line-height:1.8"><p><b style="color:var(--t1)">智历 v2.0</b> — AI智能简历诊断平台</p><p>西安电子科技大学 · 网络与信息安全学院</p></div></div>
+</div>
+
+</div></div></div>
+
+<div id="apiM" class="mo hid"><div class="md">
+<div style="text-align:center;margin-bottom:16px"><div style="font-size:32px">🔑</div><h3 style="font-size:16px;margin-top:6px">配置 AI 引擎</h3></div>
+<label>API Base URL</label><input id="mB" value="https://api.deepseek.com">
+<label>API Key</label><input id="mK" type="password" placeholder="sk-xxxxx">
+<label>模型</label><input id="mM" value="deepseek-chat">
+<p style="color:var(--t3);font-size:10px;margin:10px 0">💡 推荐DeepSeek（platform.deepseek.com注册送额度）。Key仅保存在本地。</p>
+<div style="display:flex;gap:10px"><button class="btn bp bm" style="flex:1" onclick="saveM()">保存</button><button class="btn bg bm" onclick="skipM()">演示模式</button></div>
+</div></div>
+<div id="tC"></div>
+<script>
+var cfg={base:"",key:"",model:"",demo:false};
+var hist=[];
+var curR=null;
+
+var KW={
+tech:["Python","Java","JavaScript","React","Vue","Node.js","Docker","Kubernetes","MySQL","Redis","Git","Linux","CI/CD","微服务","分布式","API","Agile","算法","数据结构","机器学习","云计算"],
+finance:["财务分析","风险管理","尽职调查","DCF","Excel建模","Bloomberg","Wind","合规","审计","投行","PE","VC","量化","CFA","FRM"],
+consulting:["战略规划","市场调研","商业分析","PPT","数据分析","KPI","ROI","SWOT","项目管理","PMP"],
+govt:["党建","政策研究","公文写作","调研报告","行政管理","公共服务","依法行政","综合协调","基层治理","乡村振兴"]
+};
+
+var SAMPLE="姓名：张三\n电话：13812345678  邮箱：zhangsan@email.com\n身份证号：610102200301011234\n家庭住址：陕西省西安市雁塔区某某小区3号楼502室\n\n教育背景：\n西安电子科技大学 网络空间安全学院 2022-2026\n专业：网络空间安全 GPA：3.5/4.0\n\n实习经历：\n2024.07-2024.09 某科技有限公司 后端开发实习生\n- 参与了项目开发\n- 写了一些代码\n- 学到了很多东西\n- 和同事关系很好\n\n项目经历：\n个人博客网站 2024.03-2024.05\n- 使用Vue+Node.js开发\n- 实现了文章发布和评论功能\n\n校园经历：\n- 网安学院学生会成员\n\n技能：\n熟悉Python、Java、C++\n了解Linux操作系统\n英语四级已过\n\n自我评价：\n我是一个积极向上、热爱学习的人，有较强的团队协作能力。";
+
+var DEMO={
+  "overall_score":48,
+  "scores":{"completeness":55,"expression":35,"format":58,"privacy":25,"ats":42,"industry":40},
+  "summary":"简历整体信息量不足，存在严重隐私泄露风险，表达口语化缺乏量化数据，需全面优化。",
+  "problems":[
+    {"severity":"high","category":"隐私安全","title":"包含完整身份证号","detail":"身份证号610102200301011234可被用于身份盗用。","suggestion":"立即删除，绝不应出现在简历中。"},
+    {"severity":"high","category":"隐私安全","title":"详细家庭住址暴露","detail":"精确到楼栋房号，暴露精确居住位置。","suggestion":"删除详细地址，仅保留城市。"},
+    {"severity":"high","category":"表达专业度","title":"实习经历缺乏量化","detail":"参与了项目开发、写了一些代码等均为无效描述。","suggestion":"使用STAR法则重写，加入具体数据。"},
+    {"severity":"medium","category":"内容完整性","title":"缺少求职意向","detail":"HR首先查看求职意向，缺少可能被跳过。","suggestion":"顶部添加明确求职意向。"},
+    {"severity":"medium","category":"表达专业度","title":"自我评价全是套话","detail":"积极向上、热爱学习是无效套话。","suggestion":"用具体事例替代。"},
+    {"severity":"medium","category":"ATS兼容性","title":"技能关键词不足","detail":"未提及框架、工具链、数据库。","suggestion":"补充Spring Boot、MySQL、Redis、Docker、Git等。"},
+    {"severity":"medium","category":"内容完整性","title":"项目经历过于简单","detail":"仅两行描述，无技术难点和成果。","suggestion":"补充技术架构、核心实现、数据。"},
+    {"severity":"low","category":"排版规范","title":"校园经历单薄","detail":"仅学生会成员一行。","suggestion":"补充具体职责和成果数据。"},
+    {"severity":"low","category":"排版规范","title":"技能等级模糊","detail":"熟悉和了解的边界不清。","suggestion":"分层展示并附使用场景。"}
+  ],
+  "privacy_risks":[
+    {"field":"身份证号","severity":"critical","detail":"完整身份证号可用于身份盗用","advice":"立即删除"},
+    {"field":"详细家庭住址","severity":"high","detail":"精确到楼栋房号暴露居住位置","advice":"最多保留城市"},
+    {"field":"手机号码","severity":"medium","detail":"公开投递时可能被第三方获取","advice":"公开场合用邮箱为主"}
+  ],
+  "ats_analysis":{"score":42,"matched":["Python","Java","C++","Vue","Node.js","Linux"],"missing":["Git","Docker","MySQL","Redis","Spring Boot","算法","数据结构","API","CI/CD","Agile"],"density":"关键词密度偏低(2.1%)，建议4-6%"},
+  "star_check":[
+    {"section":"实习经历","status":"fail","detail":"缺少STAR四要素","fix":"改写为：在XX项目中(S)负责XX(T)，用XX技术实现(A)，使指标提升XX%(R)"},
+    {"section":"项目经历","status":"partial","detail":"有简单Action，缺背景和量化结果","fix":"补充项目背景、角色和效果数据"},
+    {"section":"校园经历","status":"fail","detail":"仅有角色无STAR要素","fix":"用STAR描述一次具体活动"}
+  ],
+  "improved_sections":[
+    {"title":"实习经历","before":"2024.07-2024.09 某科技有限公司 后端开发实习生\n- 参与了项目开发\n- 写了一些代码\n- 学到了很多东西\n- 和同事关系很好","after":"2024.07-2024.09 某科技有限公司 | 后端开发实习生\n- 基于Spring Boot+MyBatis开发用户权限模块，支撑200+接口鉴权\n- 优化MySQL慢查询3处，响应从800ms降至150ms(提升81%)\n- 编写单元测试覆盖率85%，修复15+缺陷\n- 参与2次Code Review，产出文档3篇"},
+    {"title":"自我评价","before":"我是一个积极向上、热爱学习的人，有较强的团队协作能力。","after":"网络空间安全专业本科生，GPA 3.5/4.0。擅长Python/Java后端开发，有完整Web项目经验。实习期间独立优化数据库性能，具备良好工程实践能力。"}
+  ]
+};
+
+window.onload=function(){
+  loadCfg();loadHist();renderKW();
+  document.getElementById("rT").addEventListener("input",function(){
+    document.getElementById("cc").textContent=this.value.length+" 字";
+  });
+};
+
+function loadCfg(){
+  try{
+    var b=localStorage.getItem("zl_b"),k=localStorage.getItem("zl_k"),m=localStorage.getItem("zl_m"),d=localStorage.getItem("zl_d");
+    if(d==="true"){cfg.demo=true;return;}
+    if(b&&k&&m){cfg={base:b,key:k,model:m,demo:false};document.getElementById("xB").value=b;document.getElementById("xK").value=k;document.getElementById("xM").value=m;return;}
+  }catch(e){}
+  document.getElementById("apiM").classList.remove("hid");
+}
+
+function loadHist(){
+  try{hist=JSON.parse(localStorage.getItem("zl_h")||"[]");}catch(e){hist=[];}
+  document.getElementById("hB").textContent=hist.length;
+  updS();
+}
+
+function goPage(p){
+  document.querySelectorAll(".pg").forEach(function(x){x.classList.add("hid");});
+  document.getElementById("pg-"+p).classList.remove("hid");
+  document.querySelectorAll(".ni").forEach(function(n){n.classList.remove("act");});
+  var ni=document.querySelector('.ni[data-page="'+p+'"]');
+  if(ni) ni.classList.add("act");
+  if(p==="history") renderHist();
+  if(p==="result"&&curR) renderRes(curR);
+}
+
+function showM(){document.getElementById("apiM").classList.remove("hid");}
+function saveM(){
+  var b=document.getElementById("mB").value.trim(),k=document.getElementById("mK").value.trim(),m=document.getElementById("mM").value.trim();
+  if(!b||!k||!m){alert("请填写完整");return;}
+  cfg={base:b,key:k,model:m,demo:false};
+  try{localStorage.setItem("zl_b",b);localStorage.setItem("zl_k",k);localStorage.setItem("zl_m",m);localStorage.removeItem("zl_d");}catch(e){}
+  document.getElementById("xB").value=b;document.getElementById("xK").value=k;document.getElementById("xM").value=m;
+  document.getElementById("apiM").classList.add("hid");
+  toast("✅ 已保存");
+}
+function skipM(){
+  cfg.demo=true;
+  try{localStorage.setItem("zl_d","true");}catch(e){}
+  document.getElementById("apiM").classList.add("hid");
+  toast("🎮 演示模式");
+}
+function saveCfg(){
+  var b=document.getElementById("xB").value.trim(),k=document.getElementById("xK").value.trim(),m=document.getElementById("xM").value.trim();
+  if(!b||!k||!m){alert("请填写完整");return;}
+  cfg={base:b,key:k,model:m,demo:false};
+  try{localStorage.setItem("zl_b",b);localStorage.setItem("zl_k",k);localStorage.setItem("zl_m",m);localStorage.removeItem("zl_d");}catch(e){}
+  toast("✅ 已保存");
+}
+function demoM(){
+  cfg.demo=true;
+  try{localStorage.setItem("zl_d","true");}catch(e){}
+  toast("🎮 演示模式");
+}
+
+function fillS(){document.getElementById("rT").value=SAMPLE;document.getElementById("cc").textContent=SAMPLE.length+" 字";}
+function clearR(){document.getElementById("rT").value="";document.getElementById("cc").textContent="0 字";}
+function clearF(){document.getElementById("fI").classList.add("hid");document.getElementById("fi").value="";}
+function fileS(e){
+  var f=e.target.files[0];if(!f)return;
+  var name=f.name.toLowerCase();
+  document.getElementById("fN").textContent=f.name+" (解析中...)";
+  document.getElementById("fI").classList.remove("hid");
+  if(name.endsWith(".pdf")){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var arr=new Uint8Array(ev.target.result);
+      var loadingTask=pdfjsLib.getDocument({data:arr});
+      loadingTask.promise.then(function(pdf){
+        var pages=[];var total=pdf.numPages;
+        function getPage(i){
+          if(i>total){
+            var text=pages.join("\n\n");
+            document.getElementById("rT").value=text;
+            document.getElementById("cc").textContent=text.length+" 字";
+            document.getElementById("fN").textContent=f.name+" ("+total+"页)";
+            toast("✅ PDF解析完成");
+            return;
+          }
+          pdf.getPage(i).then(function(page){
+            page.getTextContent().then(function(tc){
+              var str=tc.items.map(function(item){return item.str;}).join(" ");
+              pages.push(str);
+              getPage(i+1);
+            });
+          });
+        }
+        getPage(1);
+      }).catch(function(err){
+        toast("⚠️ PDF解析失败: "+err.message);
+        document.getElementById("fI").classList.add("hid");
+      });
+    };
+    reader.readAsArrayBuffer(f);
+  }else if(name.endsWith(".docx")){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      mammoth.extractRawText({arrayBuffer:ev.target.result}).then(function(result){
+        document.getElementById("rT").value=result.value;
+        document.getElementById("cc").textContent=result.value.length+" 字";
+        document.getElementById("fN").textContent=f.name;
+        toast("✅ Word文档解析完成");
+      }).catch(function(err){
+        toast("⚠️ Word解析失败: "+err.message);
+        document.getElementById("fI").classList.add("hid");
+      });
+    };
+    reader.readAsArrayBuffer(f);
+  }else{
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      document.getElementById("rT").value=ev.target.result;
+      document.getElementById("cc").textContent=ev.target.result.length+" 字";
+      document.getElementById("fN").textContent=f.name;
+    };
+    reader.readAsText(f);
+  }
+}
+
+function setStep(n){
+  [1,2,3].forEach(function(i){
+    var s=document.getElementById("ps"+i),l=document.getElementById("pl"+(i-1));
+    s.classList.remove("act","done");
+    if(i<n){s.classList.add("done");if(l)l.classList.add("done");}
+    else if(i===n){s.classList.add("act");}
+    else{if(l)l.classList.remove("done");}
+  });
+}
+function toS1(){document.getElementById("as2").classList.add("hid");document.getElementById("as1").classList.remove("hid");setStep(1);}
+function toS2(){
+  if(!document.getElementById("rT").value.trim()){toast("⚠️ 请先输入简历");return;}
+  document.getElementById("as1").classList.add("hid");document.getElementById("as2").classList.remove("hid");setStep(2);
+}
+
+function startAI(){
+  var resume=document.getElementById("rT").value.trim();
+  if(!resume){document.getElementById("eB").textContent="请先输入简历";document.getElementById("eB").classList.remove("hid");return;}
+  document.getElementById("eB").classList.add("hid");
+  document.getElementById("as2").classList.add("hid");document.getElementById("as3").classList.remove("hid");setStep(3);
+  var steps=["解析简历结构...","评估完整性...","分析专业度...","检测隐私...","ATS分析...","STAR检查...","生成建议...","汇总报告..."];
+  var si=0;
+  var iv=setInterval(function(){si=Math.min(si+1,steps.length-1);document.getElementById("ldT").textContent=steps[si];document.getElementById("ldB").style.width=((si+1)/steps.length*100)+"%";},800);
+  if(cfg.demo){
+    setTimeout(function(){clearInterval(iv);document.getElementById("ldB").style.width="100%";document.getElementById("ldT").textContent="完成！";setTimeout(function(){finish(DEMO);},600);},steps.length*800+500);
+  }else{
+    callAPI(resume).then(function(result){clearInterval(iv);document.getElementById("ldB").style.width="100%";document.getElementById("ldT").textContent="完成！";setTimeout(function(){finish(result);},600);}).catch(function(e){clearInterval(iv);document.getElementById("as3").classList.add("hid");document.getElementById("as2").classList.remove("hid");setStep(2);document.getElementById("eB").textContent="出错："+e.message;document.getElementById("eB").classList.remove("hid");});
+  }
+}
+
+function finish(result){
+  curR=result;
+  var rec={id:Date.now(),time:new Date().toLocaleString("zh-CN"),score:result.overall_score,ind:document.getElementById("sI").value,probs:(result.problems||[]).length,priv:(result.privacy_risks||[]).length,sum:result.summary};
+  hist.unshift(rec);
+  try{localStorage.setItem("zl_h",JSON.stringify(hist.slice(0,50)));}catch(e){}
+  document.getElementById("hB").textContent=hist.length;updS();
+  document.getElementById("navR").style.display="";
+  goPage("result");
+  document.getElementById("as3").classList.add("hid");document.getElementById("as1").classList.remove("hid");setStep(1);
+}
+
+function callAPI(resume){
+  var jd=document.getElementById("jD").value.trim();
+  var ind=document.getElementById("sI").value;
+  var job=document.getElementById("jT").value.trim();
+  var prompt="你是资深HR和简历优化专家。对以下简历进行六维度诊断。\n简历：\n"+resume+"\n"+(jd?"岗位JD："+jd+"\n":"")+(job?"目标岗位："+job+"\n":"")+"行业："+ind+"\n请严格按JSON返回，不要其他内容。格式同示例。问题至少6个；必须检测隐私；ATS列关键词；STAR逐段检查；至少2段优化对比。";
+  var url=cfg.base.replace(/\/+$/,"")+"/v1/chat/completions";
+  return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.key},body:JSON.stringify({model:cfg.model,messages:[{role:"user",content:prompt}],max_tokens:3000,temperature:0.7})}).then(function(resp){return resp.json();}).then(function(data){if(data.error)throw new Error(data.error.message||"API error");var text=data.choices[0].message.content||"";text=text.replace(/```json|```/g,"").trim();return JSON.parse(text);});
+}
+
+function renderRes(r){
+  document.getElementById("rTm").textContent="生成于 "+new Date().toLocaleString("zh-CN");
+  var c=r.overall_score>70?"var(--green)":r.overall_score>50?"var(--orange)":"var(--red)";
+  var lb=r.overall_score>70?"良好":r.overall_score>50?"一般":"需优化";
+  document.getElementById("oC").innerHTML='<div style="position:absolute;inset:0;background:radial-gradient(ellipse at top,'+c+'11 0%,transparent 60%)"></div><div class="cbd" style="position:relative;padding:28px"><div style="font-size:56px;font-weight:900;font-family:JetBrains Mono,monospace;color:'+c+'">'+r.overall_score+'</div><div style="font-size:13px;color:'+c+';margin:4px 0 10px;font-weight:600">'+lb+'</div><p style="font-size:12px;color:var(--t2);line-height:1.7">'+r.summary+'</p></div>';
+  drawRadar(r.scores);
+  var dims=[{k:"completeness",l:"完整性",i:"📋",c:"var(--blue)"},{k:"expression",l:"专业度",i:"✍️",c:"var(--cyan)"},{k:"format",l:"规范性",i:"📐",c:"var(--green)"},{k:"privacy",l:"隐私安全",i:"🔒",c:"var(--red)"},{k:"ats",l:"ATS兼容",i:"🎯",c:"var(--orange)"},{k:"industry",l:"行业适配",i:"💼",c:"var(--purple)"}];
+  var bh="";
+  dims.forEach(function(d){var s=r.scores[d.k]||0;bh+='<div style="display:flex;align-items:center;gap:12px"><span style="font-size:16px;width:24px;text-align:center">'+d.i+'</span><span style="font-size:12px;width:70px;color:var(--t2)">'+d.l+'</span><div class="sb" style="flex:1"><div class="sbf" style="width:'+s+'%;background:'+d.c+'"></div></div><span style="font-size:13px;font-weight:700;font-family:JetBrains Mono,monospace;width:32px;text-align:right;color:'+d.c+'">'+s+'</span></div>';});
+  document.getElementById("bC").innerHTML='<div class="cbd" style="display:flex;flex-direction:column;gap:14px">'+bh+'</div>';
+  rTab("problems",document.querySelector(".tabs .tb"));
+}
+
+function rTab(tab,el){
+  document.querySelectorAll(".tabs .tb").forEach(function(t){t.classList.remove("act");});
+  el.classList.add("act");
+  var r=curR;if(!r)return;
+  var C=document.getElementById("rTC");
+  var h="";
+  if(tab==="problems"){
+    var cn={high:0,medium:0,low:0};(r.problems||[]).forEach(function(p){cn[p.severity]++;});
+    h+='<div style="display:flex;gap:10px;margin-bottom:16px"><div class="card" style="flex:1;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--red)">'+cn.high+'</div><div style="font-size:10px;color:var(--t3)">严重</div></div><div class="card" style="flex:1;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--orange)">'+cn.medium+'</div><div style="font-size:10px;color:var(--t3)">中等</div></div><div class="card" style="flex:1;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--green)">'+cn.low+'</div><div style="font-size:10px;color:var(--t3)">轻微</div></div></div>';
+    (r.problems||[]).forEach(function(p,i){
+      var sv=p.severity==="high"?"严重":p.severity==="medium"?"中等":"轻微";
+      var bc=p.severity==="high"?"var(--red)":p.severity==="medium"?"var(--orange)":"var(--green)";
+      var bcls=p.severity==="high"?"bhi":p.severity==="medium"?"bme":"blo";
+      h+='<div class="card" style="padding:18px;margin-bottom:10px;border-left:3px solid '+bc+';animation:fadeIn .3s ease '+(i*0.05)+'s both"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="badge '+bcls+'">'+sv+'</span><span class="tag" style="font-size:9px;padding:2px 7px">'+(p.category||"")+'</span><span style="font-weight:600;font-size:13px">'+p.title+'</span></div><p style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:10px">'+p.detail+'</p><div style="background:var(--bg0);border-radius:10px;padding:10px 12px"><span style="font-size:11px;color:var(--cyan)">💡</span> <span style="font-size:12px;color:var(--t2)">'+p.suggestion+'</span></div></div>';
+    });
+  }
+  else if(tab==="privacy"){
+    if(r.privacy_risks&&r.privacy_risks.length){
+      r.privacy_risks.forEach(function(p,i){
+        var sc=p.severity==="critical"?"var(--red)":"var(--orange)";
+        var sl=p.severity==="critical"?"危险":p.severity==="high"?"高风险":"注意";
+        h+='<div class="card" style="padding:18px;margin-bottom:10px;border-left:3px solid '+sc+'"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:18px">⚠️</span><span style="font-weight:700;font-size:14px;color:'+sc+'">'+p.field+'</span><span class="badge" style="background:'+sc+'20;color:'+sc+'">'+sl+'</span></div><p style="font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:6px">'+p.detail+'</p><p style="font-size:12px;color:var(--green)">✅ '+p.advice+'</p></div>';
+      });
+    }else{h='<div class="card" style="padding:40px;text-align:center"><div style="font-size:40px;margin-bottom:10px">🎉</div><p style="color:var(--green);font-weight:600">无隐私风险</p></div>';}
+    h+='<div class="card" style="padding:14px;margin-top:10px"><p style="font-size:11px;color:var(--t3)">🔒 检测：身份证号、家庭住址、银行卡号等</p></div>';
+  }
+  else if(tab==="ats"){
+    var a=r.ats_analysis||{score:0,matched:[],missing:[],density:""};
+    h+='<div class="card" style="padding:22px;margin-bottom:14px"><div style="display:flex;align-items:center;gap:14px;margin-bottom:18px"><div style="font-size:32px;font-weight:900;font-family:JetBrains Mono,monospace;color:'+(a.score>60?"var(--green)":"var(--orange)")+'">'+a.score+'%</div><div><div style="font-size:13px;font-weight:600">ATS通过率</div><div style="font-size:11px;color:var(--t3)">'+a.density+'</div></div></div>';
+    h+='<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px">✅ 已匹配 ('+a.matched.length+')</div><div>'+(a.matched||[]).map(function(k){return'<span class="tag tmatch">'+k+'</span>';}).join("")+'</div></div>';
+    h+='<div><div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:8px">❌ 缺失 ('+(a.missing||[]).length+')</div><div>'+(a.missing||[]).map(function(k){return'<span class="tag tmiss">'+k+'</span>';}).join("")+'</div></div></div>';
+  }
+  else if(tab==="optimize"){
+    (r.improved_sections||[]).forEach(function(s){
+      h+='<div class="card" style="padding:22px;margin-bottom:14px"><div style="font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:14px">✨ '+s.title+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div><div style="font-size:10px;color:var(--red);font-weight:600;margin-bottom:6px">❌ 优化前</div><div style="background:rgba(255,71,87,.04);border:1px solid rgba(255,71,87,.1);border-radius:10px;padding:12px;font-size:12px;color:var(--t3);line-height:1.8;font-family:JetBrains Mono,monospace;white-space:pre-wrap">'+s.before+'</div></div><div><div style="font-size:10px;color:var(--green);font-weight:600;margin-bottom:6px">✅ 优化后</div><div style="background:rgba(0,232,143,.04);border:1px solid rgba(0,232,143,.1);border-radius:10px;padding:12px;font-size:12px;color:var(--t1);line-height:1.8;font-family:JetBrains Mono,monospace;white-space:pre-wrap">'+s.after+'</div></div></div></div>';
+    });
+  }
+  else if(tab==="star"){
+    h+='<div class="card" style="padding:14px;margin-bottom:14px"><p style="font-size:11px;color:var(--t3)">⭐ STAR法则：Situation→Task→Action→Result</p></div>';
+    (r.star_check||[]).forEach(function(s){
+      var ic=s.status==="pass"?"✅":s.status==="partial"?"⚠️":"❌";
+      var sc=s.status==="pass"?"var(--green)":s.status==="partial"?"var(--orange)":"var(--red)";
+      var sl=s.status==="pass"?"通过":s.status==="partial"?"部分":"不通过";
+      h+='<div class="card" style="padding:18px;margin-bottom:10px;border-left:3px solid '+sc+'"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:16px">'+ic+'</span><span style="font-weight:600;font-size:13px">'+s.section+'</span><span class="badge" style="background:'+sc+'20;color:'+sc+'">'+sl+'</span></div><p style="font-size:12px;color:var(--t2);margin-bottom:8px">'+s.detail+'</p><div style="background:var(--bg0);border-radius:10px;padding:10px;font-size:12px;color:var(--cyan)">💡 '+s.fix+'</div></div>';
+    });
+  }
+  C.innerHTML=h;
+}
+
+function drawRadar(sc){
+  var cv=document.getElementById("radar"),ctx=cv.getContext("2d"),w=cv.width,h=cv.height,cx=w/2,cy=h/2,R=100;
+  ctx.clearRect(0,0,w,h);
+  var lb=["完整性","专业度","规范性","隐私","ATS","行业"],ks=["completeness","expression","format","privacy","ats","industry"],n=6,as=Math.PI*2/n,sa=-Math.PI/2;
+  [0.2,0.4,0.6,0.8,1].forEach(function(s){ctx.beginPath();for(var i=0;i<=n;i++){var a=sa+i*as,x=cx+R*s*Math.cos(a),y=cy+R*s*Math.sin(a);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle="rgba(0,0,0,.06)";ctx.lineWidth=1;ctx.stroke();});
+  for(var i=0;i<n;i++){var a=sa+i*as;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle="rgba(0,0,0,.1)";ctx.stroke();}
+  ctx.beginPath();
+  for(var i=0;i<=n;i++){var idx=i%n,v=(sc[ks[idx]]||0)/100,a=sa+idx*as,x=cx+R*v*Math.cos(a),y=cy+R*v*Math.sin(a);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+  ctx.fillStyle="rgba(79,95,255,.15)";ctx.fill();ctx.strokeStyle="rgba(79,95,255,.8)";ctx.lineWidth=2;ctx.stroke();
+  for(var i=0;i<n;i++){var v=(sc[ks[i]]||0)/100,a=sa+i*as,px=cx+R*v*Math.cos(a),py=cy+R*v*Math.sin(a);ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fillStyle="#4F5FFF";ctx.fill();ctx.beginPath();ctx.arc(px,py,2,0,Math.PI*2);ctx.fillStyle="#FFFFFF";ctx.fill();var lx=cx+(R+20)*Math.cos(a),ly=cy+(R+20)*Math.sin(a);ctx.fillStyle="#5A6170";ctx.font="10px Noto Sans SC";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(lb[i],lx,ly);}
+}
+
+function renderHist(){
+  var c=document.getElementById("hC");
+  if(!hist.length){c.innerHTML='<div style="text-align:center;padding:36px;color:var(--t3)"><div style="font-size:40px;margin-bottom:10px;opacity:.4">📭</div><p>暂无记录</p></div>';return;}
+  var im={general:"通用",tech:"互联网",finance:"金融",consulting:"咨询",govt:"公务员"};
+  var h='<table class="htb"><thead><tr><th>时间</th><th>评分</th><th>行业</th><th>问题</th><th>隐私</th><th>概要</th></tr></thead><tbody>';
+  hist.forEach(function(r){var clr=r.score>70?"var(--green)":r.score>50?"var(--orange)":"var(--red)";h+='<tr><td style="color:var(--t3);white-space:nowrap;font-size:11px">'+r.time+'</td><td><span style="color:'+clr+';font-weight:700;font-family:JetBrains Mono,monospace">'+r.score+'</span></td><td style="font-size:11px">'+(im[r.ind]||r.ind)+'</td><td>'+r.probs+'</td><td>'+r.priv+'</td><td style="color:var(--t2);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">'+(r.sum||"-")+'</td></tr>';});
+  h+='</tbody></table>';c.innerHTML=h;
+}
+function clearH(){if(!confirm("确定清空？"))return;hist=[];try{localStorage.removeItem("zl_h");}catch(e){}document.getElementById("hB").textContent="0";updS();renderHist();toast("🗑️ 已清空");}
+function updS(){
+  document.getElementById("sT").textContent=hist.length;
+  document.getElementById("sA").textContent=hist.length?Math.round(hist.reduce(function(s,h){return s+h.score;},0)/hist.length):"--";
+  document.getElementById("sP").textContent=hist.reduce(function(s,h){return s+(h.priv||0);},0);
+  document.getElementById("sB").textContent=hist.reduce(function(s,h){return s+(h.probs||0);},0);
+}
+function renderKW(){
+  var map={tech:"kwT",finance:"kwF",consulting:"kwC",govt:"kwG"};
+  Object.keys(map).forEach(function(k){var el=document.getElementById(map[k]);if(el)el.innerHTML=(KW[k]||[]).map(function(w){return'<span class="tag">'+w+'</span>';}).join("");});
+}
+function expR(){
+  if(!curR)return;var r=curR;
+  var t="智历诊断报告\n生成："+new Date().toLocaleString("zh-CN")+"\n\n综合："+r.overall_score+"/100\n"+r.summary+"\n";
+  (r.problems||[]).forEach(function(p,i){t+="\n"+(i+1)+". ["+p.severity+"] "+p.title+"\n  "+p.detail+"\n  建议："+p.suggestion;});
+  var blob=new Blob([t],{type:"text/plain;charset=utf-8"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="智历报告.txt";a.click();toast("📥 已导出");
+}
+function toast(msg){
+  var t=document.createElement("div");t.className="toast";t.textContent=msg;document.getElementById("tC").appendChild(t);
+  setTimeout(function(){t.style.opacity="0";t.style.transition="opacity .3s";setTimeout(function(){t.remove();},300);},2500);
+}
+
+</script>
+</body>
+</html>
